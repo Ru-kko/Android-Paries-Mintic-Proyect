@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/parties2"
+    >
+    <fragment
+        android:id="@+id/parties2"
+        android:name="com.example.reto.frags.Views.Parties"
+        android:label="parties_page"
+        tools:layout="@layout/parties_page" >
+        <action
+            android:id="@+id/action_parties2_to_onePartyPage"
+            app:destination="@id/onePartyPage">
+        </action>
+        <action
+            android:id="@+id/action_parties2_to_offices"
+            app:destination="@id/offices" />
+        <action
+            android:id="@+id/action_parties2_to_services"
+            app:destination="@id/services" />
+    </fragment>
+    <fragment
+        android:id="@+id/onePartyPage"
+        android:name="com.example.reto.frags.Views.OnePartyPage"
+        android:label="OnePartyPage"
+        tools:layout="@layout/one_party_page">
+        <action
+            android:id="@+id/action_onePartyPage_to_parties2"
+            app:destination="@id/parties2" />
+        <argument
+            android:name="info"
+            app:argType="com.example.reto.models.Party" />
+    </fragment>
+    <fragment
+        android:id="@+id/offices"
+        android:name="com.example.reto.frags.Views.Offices"
+        android:label="offices_page"
+        tools:layout="@layout/offices_page" >
+        <action
+            android:id="@+id/action_offices_to_parties2"
+            app:destination="@id/parties2" />
+    </fragment>
+    <fragment
+        android:id="@+id/services"
+        android:name="com.example.reto.frags.Views.Services"
+        android:label="services_page"
+        tools:layout="@layout/services_page" >
+        <action
+            android:id="@+id/action_services_to_parties2"
+            app:destination="@id/parties2" />
+    </fragment>
+</navigation>

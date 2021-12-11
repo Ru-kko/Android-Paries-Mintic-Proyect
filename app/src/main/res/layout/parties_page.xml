@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".frags.Views.Parties">
+
+    <LinearLayout
+        android:id="@+id/head_"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/filter_background">
+
+        <ImageButton
+            android:id="@+id/show_filter"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/filter_ico"
+            tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/Fill"
+            android:textColor="@color/dark_gray"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:ignore="TextContrastCheck" />
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/parties_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/head_"
+        android:layout_alignParentBottom="true"
+        android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:id="@+id/filter_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head_"
+        android:background="@drawable/filter_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <Switch
+            android:id="@+id/show_favorites_toggle_btn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/Switch_Toggle_Fav"
+            android:textColor="@color/dark_gray"
+            android:textSize="25sp"
+            android:thumbTint="@color/purple_contrast"
+            tools:ignore="UseSwitchCompatOrMaterialXml"
+            tools:targetApi="m" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
+                android:text="@string/max_price"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/max_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:progressBackgroundTint="@color/light_pink"
+                android:progressTint="@color/purple_contrast"
+                android:thumbTint="@color/purple_contrast" />
+
+            <TextView
+                android:id="@+id/max_price_count"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:text="@string/all_prices"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/confirm_fill"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Fill"
+            tools:ignore="DuplicateSpeakableTextCheck,TouchTargetSizeCheck" />
+    </LinearLayout>
+</RelativeLayout>
