@@ -47,7 +47,7 @@
         android:id="@+id/services"
         android:name="com.example.reto.frags.Views.Services"
         android:label="services_page"
-        tools:layout="@layout/services_page" >
+        tools:layout="@layout/more_services_page" >
         <action
             android:id="@+id/action_services_to_parties2"
             app:destination="@id/parties2" />
