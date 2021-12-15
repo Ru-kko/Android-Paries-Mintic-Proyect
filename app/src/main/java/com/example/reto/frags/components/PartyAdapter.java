@@ -41,8 +41,6 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.ViewHolder> 
                 content.get(position),
                 container
         );
-
-
     }
 
     @Override
