@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +20,25 @@ import java.util.List;
 
 
 public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.ViewHolder> {
-    private final List<Party> content;
+    private List<Party> content;
     private final View container;
 
-    public PartyAdapter(List<Party> content, View container) {
-        this.content = content;
+    public PartyAdapter(View container){
         this.container = container;
-
     }
 
+    public void clear(){
+        if (content != null) {
+            content.clear();
+            notifyItemRangeRemoved(0, content.size());
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void change(List<Party> content){
+        this.content = content;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -45,7 +56,9 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return content.size();
+        if (content != null)
+            return content.size();
+        return 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

@@ -2,13 +2,9 @@ package com.example.reto;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 /**
@@ -27,26 +23,17 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         content = getSupportFragmentManager().findFragmentById(R.id.Content);
 
         ImageButton officeBtn = findViewById(R.id.offices_btn);
-        officeBtn.setOnClickListener(view -> changeContentTo(content.getView(), R.id.offices, "Offices"));
+        officeBtn.setOnClickListener(view -> Navigation.findNavController(content.requireView()).navigate(R.id.offices));
 
         ImageButton partiesBtn = findViewById(R.id.parties_btn);
-        partiesBtn.setOnClickListener(view -> changeContentTo(content.getView(), R.id.parties2, "Parties"));
+        partiesBtn.setOnClickListener(view -> Navigation.findNavController(content.requireView()).navigate(R.id.parties2));
 
         ImageButton servicesBtn = findViewById(R.id.services_btn);
-        servicesBtn.setOnClickListener(view -> changeContentTo(content.getView(), R.id.services, "Services"));
-    }
-
-    /**
-     * Move into home fragments
-     * @param view Button view
-     * @param fragment Id of next fragment
-     * @param title The title what will be in activity header
-     */
-    private void changeContentTo(View view, Integer fragment, String title){
-        setTitle(title);
-        Navigation.findNavController(view).navigate(fragment);
+        servicesBtn.setOnClickListener(view -> Navigation.findNavController(content.requireView()).navigate(R.id.services));
     }
 }

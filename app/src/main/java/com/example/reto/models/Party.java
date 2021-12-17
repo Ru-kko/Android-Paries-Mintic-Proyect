@@ -9,6 +9,7 @@ public class Party implements Parcelable {
     private int price;
     private String name;
     private String address;
+    private String description;
 
     // null constructor
     public Party() {
@@ -21,7 +22,6 @@ public class Party implements Parcelable {
         this.address = address;
         this.description = description;
     }
-
 
     protected Party(Parcel in) {
         id = in.readInt();
@@ -82,9 +82,6 @@ public class Party implements Parcelable {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    private String description;
-
 
     @Override
     public int describeContents() {

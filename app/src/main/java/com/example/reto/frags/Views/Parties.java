@@ -26,8 +26,8 @@ import com.example.reto.R;
 import com.example.reto.crud.Favorites.FavoritesCrud;
 import com.example.reto.frags.components.PartyAdapter;
 import com.example.reto.models.Party;
+import com.example.reto.restConsummer.PartyRest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Parties extends Fragment {
@@ -36,11 +36,14 @@ public class Parties extends Fragment {
     private RecyclerView content;
     private LinearLayout filter_options;
     private TextView maxPrice;
-    private View this_fragment;
 
-    private Integer productMaxPrice;
+    private Integer productMaxPriceFavorite;
+    private Integer productMaxPriceRest = 100;
     private Integer max_price_selected = 0;
     private FavoritesCrud favoriteDb;
+    private PartyRest rest;
+    private Thread restThread;
+    private PartyAdapter adapter;
 
     public Parties(){
         super(R.layout.parties_page);
@@ -53,13 +56,16 @@ public class Parties extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.favoriteDb = new FavoritesCrud(this.getActivity());
+        this.rest = new PartyRest(requireContext());
+        this.adapter = new PartyAdapter(view);
 
-        this.this_fragment = view;
+        this.productMaxPriceRest = rest.getMaxPrice();
+        this.productMaxPriceFavorite = favoriteDb.getMaxPrice();
+
         this.content = view.findViewById(R.id.parties_list);
         this.filter_options = view.findViewById(R.id.filter_options);
         this.toggleFavorites = view.findViewById(R.id.show_favorites_toggle_btn);
         this.maxPrice = view.findViewById(R.id.max_price_count);
-        this.productMaxPrice = favoriteDb.getMaxPrice();
 
         ImageButton filter_show = view.findViewById(R.id.show_filter);
         SeekBar maxPriceLine = view.findViewById(R.id.max_price);
@@ -67,14 +73,20 @@ public class Parties extends Fragment {
 
         this.toggleFavorites.setOnClickListener(this::checkButtonListener);
         this.content.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.content.setAdapter(this.adapter);
         filter_show.setOnClickListener(this::setFilterVisibility);
         fill.setOnClickListener(this::confirmFill);
 
 
+        requireActivity().setTitle("Parties");
         maxPriceLine.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int price = productMaxPrice / 100;
+                int price;
+                if (toggleFavorites.isChecked())
+                    price = productMaxPriceFavorite / 100;
+                else
+                    price = productMaxPriceRest / 100;
                 max_price_selected = price * i;
             }
             @Override
@@ -96,9 +108,9 @@ public class Parties extends Fragment {
     }
     @Override
     public void onResume() {
-        productMaxPrice = favoriteDb.getMaxPrice();
-        checkButtonListener(null);
         super.onResume();
+        checkButtonListener(null);
+        this.productMaxPriceFavorite = favoriteDb.getMaxPrice();
     }
 
     private void setFilterVisibility(View view){
@@ -107,15 +119,25 @@ public class Parties extends Fragment {
         else
             filter_options.setVisibility(View.VISIBLE);
     }
-    private void  confirmFill(@Nullable View view){
+    private void confirmFill(@Nullable View view){
+        if(restThread != null) this.restThread.interrupt();
+
         if(toggleFavorites.isChecked()) {
-            PartyAdapter adapter;
-            adapter = new PartyAdapter(favoriteDb.getPartiesWhen(max_price_selected), this_fragment);
+            adapter.change(favoriteDb.getPartiesWhen(max_price_selected));
             content.setAdapter(adapter);
-            productMaxPrice = favoriteDb.getMaxPrice();
+            productMaxPriceFavorite = favoriteDb.getMaxPrice();
         } else {
-            // TODO consume rest api
-            testInfo();
+
+            restThread = new Thread(){
+                @Override
+                public void run() {
+                    adapter.clear();
+                    List<Party> newContent = rest.getItems(max_price_selected);
+
+                    requireActivity().runOnUiThread(() -> adapter.change(newContent));
+                }
+            };
+            restThread.start();
         }
         filter_options.setVisibility(View.GONE);
     }
@@ -133,21 +155,7 @@ public class Parties extends Fragment {
             if (view != null)
                 Toast.makeText(getActivity(), "Check your internet connection", Toast.LENGTH_SHORT).show();
         }
-    }
-    /**
-     *  Simulate rest consumer
-     */
-    private void testInfo(){
-        List<Party> cnt = new ArrayList<>();
-
-        cnt.add(new Party(0, 10000, "Test Name", "nan", "desc"));
-        cnt.add(new Party(1, 1000, "Test Name 2", "nan", "desc"));
-        cnt.add(new Party(2, 200, "Test Name 3", "nan", "desc"));
-        cnt.add(new Party(3, 100, "Test Name 5", "nan", "desc"));
-        cnt.add(new Party(3, 500, "Test Name 6", "nan", "desc"));
-        cnt.add(new Party(3, 100, "Test Name 7", "nan", getResources().getString(R.string.large_text)));
-
-        PartyAdapter adapter = new PartyAdapter(cnt, this_fragment);
-        content.setAdapter(adapter);
+        if (!toggleFavorites.isChecked())
+            this.productMaxPriceRest = rest.getMaxPrice();
     }
 }
