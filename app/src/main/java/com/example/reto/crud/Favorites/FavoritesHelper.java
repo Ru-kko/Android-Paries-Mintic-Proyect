@@ -23,6 +23,7 @@ public class FavoritesHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY ," +
                 "name TEXT NOT NULL ," +
                 "address TEXT NOT NULL," +
+                "image BlOB ," +
                 "price INTEGER ," +
                 "description TEXT )");
     }

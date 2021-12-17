@@ -2,12 +2,17 @@ package com.example.reto.restConsummer;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.reto.R;
 import com.example.reto.models.Party;
 
 
@@ -25,7 +30,6 @@ public class PartyRest {
     public PartyRest(Context ctx) {
         this.ctx = ctx;
     }
-
 
     public List<Party> getItems(int max) {
 
@@ -50,6 +54,17 @@ public class PartyRest {
                             actual.setDescription(items.getJSONObject(i).getString("description"));
                             actual.setAddress(items.getJSONObject(i).getString("address"));
                             actual.setPrice(items.getJSONObject(i).getInt("price"));
+
+                            RequestQueue innerQueue = Volley.newRequestQueue(ctx);
+                            ImageRequest imgReq = new ImageRequest(
+                                    items.getJSONObject(i).getString("image"),
+                                    actual::setImage,
+                                    0 , 0,
+                                    ImageView.ScaleType.CENTER,
+                                    Bitmap.Config.ARGB_8888,
+                                    error -> actual.setImage(BitmapFactory.decodeResource(ctx.getResources(), R.drawable.ic_launcher_foreground))
+                            );
+                            innerQueue.add(imgReq);
 
                             response.add(actual);
                         }

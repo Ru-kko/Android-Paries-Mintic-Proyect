@@ -37,6 +37,7 @@
         android:padding="20dp">
 
         <ImageView
+            android:id="@+id/partyImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:contentDescription="@string/todo"

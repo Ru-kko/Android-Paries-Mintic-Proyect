@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ public class OnePartyPage extends Fragment {
     TextView description;
     TextView address;
     ImageButton fav_btn;
+    ImageView image;
 
     Boolean favorite;
     Party info;
@@ -45,6 +47,7 @@ public class OnePartyPage extends Fragment {
         this.price = view.findViewById(R.id.party_pg_price);
         this.address = view.findViewById(R.id.party_pg_address);
         this.description = view.findViewById(R.id.party_pg_desc);
+        this.image = view.findViewById(R.id.partyImage);
 
         fav_btn = view.findViewById(R.id.favorite_btn);
         fav_btn.setOnClickListener(this::favorite);
@@ -53,6 +56,7 @@ public class OnePartyPage extends Fragment {
         name.setText(info.getName());
         price.setText(String.valueOf(info.getPrice()));
         address.setText(info.getAddress());
+        image.setImageBitmap(info.getImage());
         description.setText(info.getDescription());
 
 

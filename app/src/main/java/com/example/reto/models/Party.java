@@ -1,8 +1,11 @@
 package com.example.reto.models;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.ByteArrayOutputStream;
 
 public class Party implements Parcelable {
     private int id;
@@ -10,17 +13,19 @@ public class Party implements Parcelable {
     private String name;
     private String address;
     private String description;
+    private Bitmap image;
 
     // null constructor
     public Party() {
     }
 
-    public Party(int id, int price, String name, String address, String description) {
+    public Party(int id, int price, String name, String address, String description, Bitmap image) {
         this.id = id;
         this.price = price;
         this.name = name;
         this.address = address;
         this.description = description;
+        this.image = image;
     }
 
     protected Party(Parcel in) {
@@ -29,6 +34,7 @@ public class Party implements Parcelable {
         name = in.readString();
         address = in.readString();
         description = in.readString();
+        image = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     public static final Creator<Party> CREATOR = new Creator<Party>() {
@@ -42,6 +48,26 @@ public class Party implements Parcelable {
             return new Party[size];
         }
     };
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public byte[] getImageData(){
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 0, out);
+
+        return out.toByteArray();
+    }
+
+    public void setImage(byte [] data){
+         this.image = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
     public int getId() {
         return id;
@@ -95,5 +121,6 @@ public class Party implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(address);
         parcel.writeString(description);
+        parcel.writeParcelable(image, i);
     }
 }

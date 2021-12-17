@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.reto.R;
@@ -66,6 +67,7 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.ViewHolder> 
         TextView textName;
         TextView textPrice;
         TextView textAddress;
+        ImageButton image;
         Button moreBtn;
 
         public ViewHolder(@NonNull View itemView) {
@@ -74,11 +76,13 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.ViewHolder> 
             textName = itemView.findViewById(R.id.CardPartyName);
             textPrice = itemView.findViewById(R.id.CardPrice);
             textAddress = itemView.findViewById(R.id.CardAddress);
+            image = itemView.findViewById(R.id.partyCardImage);
         }
         public void bind(Party party, View container){
             this.textName.setText(party.getName());
             this.textAddress.setText(party.getAddress());
             this.textPrice.setText(String.valueOf(party.getPrice()));
+            this.image.setImageBitmap(party.getImage());
 
             this.moreBtn.setOnClickListener(View -> {
                 Bundle info = new Bundle();

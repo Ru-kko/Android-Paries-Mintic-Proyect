@@ -1,5 +1,6 @@
 package com.example.reto.crud.Favorites;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import com.example.reto.models.Party;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressLint("Range")
 public class FavoritesCrud {
     FavoritesHelper dbHelper;
 
@@ -24,6 +26,7 @@ public class FavoritesCrud {
 
         content.put("id", item.getId());
         content.put("name", item.getName());
+        content.put("image", item.getImageData());
         content.put("address", item.getAddress());
         content.put("description", item.getDescription());
         content.put("price", item.getPrice());
@@ -97,6 +100,7 @@ public class FavoritesCrud {
                 toAdd.setName(c.getString(c.getColumnIndex("name")));
                 toAdd.setAddress(c.getString(c.getColumnIndex("address")));
                 toAdd.setDescription(c.getString(c.getColumnIndex("description")));
+                toAdd.setImage(c.getBlob(c.getColumnIndex("image")));
                 response.add(toAdd);
             }while (c.moveToNext());
             c.close();
