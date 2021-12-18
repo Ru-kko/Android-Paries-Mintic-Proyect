@@ -31,9 +31,8 @@ public class PartyRest {
         this.ctx = ctx;
     }
 
-    public List<Party> getItems(int max) {
+    public void getItems(int max, ResponseListener responseVoid) {
 
-        List<Party> response = new ArrayList<>();
         String request = max == 0 ? url : url + "/" + max;
 
         RequestQueue queue = Volley.newRequestQueue(this.ctx);
@@ -44,6 +43,7 @@ public class PartyRest {
                 null,
                 _response -> {
                     try {
+                        List<Party> response = new ArrayList<>();
                         JSONArray items = _response.getJSONArray("items");
 
                         for (int i = 0; i < items.length(); i++) {
@@ -69,6 +69,7 @@ public class PartyRest {
                             response.add(actual);
                         }
 
+                        responseVoid.doSomething(response);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -81,7 +82,6 @@ public class PartyRest {
         );
 
         queue.add(req);
-        return response;
     }
 
     private void setMaxPrice() {
@@ -104,7 +104,12 @@ public class PartyRest {
     }
 
     public Integer getMaxPrice(){
+        final Integer maxPrice = this.maxPrice;
         setMaxPrice();
-        return maxPrice != null ? maxPrice : 1000;
+        return this.maxPrice != null ? this.maxPrice  : maxPrice != null ? maxPrice : 1000;
+    }
+
+    public interface ResponseListener{
+        void doSomething(List<Party> content);
     }
 }

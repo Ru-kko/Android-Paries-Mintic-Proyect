@@ -36,6 +36,7 @@ public class Services extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        requireActivity().setTitle("Services");
         this.content = view.findViewById(R.id.services_rec);
         this.content.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 

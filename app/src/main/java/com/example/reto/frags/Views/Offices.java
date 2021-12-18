@@ -43,7 +43,7 @@ public class Offices extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-
+        requireActivity().setTitle("Offices");
         map = view.findViewById(R.id.offices_map);
         mapController = (MapController) map.getController();
 

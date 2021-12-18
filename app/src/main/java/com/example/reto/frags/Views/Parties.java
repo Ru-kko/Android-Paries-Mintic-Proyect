@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -25,10 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.reto.R;
 import com.example.reto.crud.Favorites.FavoritesCrud;
 import com.example.reto.frags.components.PartyAdapter;
-import com.example.reto.models.Party;
 import com.example.reto.restConsummer.PartyRest;
-
-import java.util.List;
 
 public class Parties extends Fragment {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -36,23 +34,25 @@ public class Parties extends Fragment {
     private RecyclerView content;
     private LinearLayout filter_options;
     private TextView maxPrice;
+    private ProgressBar loadCircle;
 
     private Integer productMaxPriceFavorite;
     private Integer productMaxPriceRest = 100;
     private Integer max_price_selected = 0;
     private FavoritesCrud favoriteDb;
     private PartyRest rest;
-    private Thread restThread;
     private PartyAdapter adapter;
 
-    public Parties(){
+    public Parties() {
         super(R.layout.parties_page);
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.parties_page, container, false);
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.favoriteDb = new FavoritesCrud(this.getActivity());
@@ -62,6 +62,7 @@ public class Parties extends Fragment {
         this.productMaxPriceRest = rest.getMaxPrice();
         this.productMaxPriceFavorite = favoriteDb.getMaxPrice();
 
+        this.loadCircle = view.findViewById(R.id.loadingCircle);
         this.content = view.findViewById(R.id.parties_list);
         this.filter_options = view.findViewById(R.id.filter_options);
         this.toggleFavorites = view.findViewById(R.id.show_favorites_toggle_btn);
@@ -89,13 +90,15 @@ public class Parties extends Fragment {
                     price = productMaxPriceRest / 100;
                 max_price_selected = price * i;
             }
+
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar){}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @SuppressLint("SetTextI18n")
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if(max_price_selected != 0)
+                if (max_price_selected != 0)
                     maxPrice.setText(String.valueOf(max_price_selected));
                 else
                     maxPrice.setText("All");
@@ -106,6 +109,7 @@ public class Parties extends Fragment {
         confirmFill(null);
         super.onViewCreated(view, savedInstanceState);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -113,35 +117,30 @@ public class Parties extends Fragment {
         this.productMaxPriceFavorite = favoriteDb.getMaxPrice();
     }
 
-    private void setFilterVisibility(View view){
-        if(filter_options.getVisibility() == View.VISIBLE)
+    private void setFilterVisibility(View view) {
+        if (filter_options.getVisibility() == View.VISIBLE)
             filter_options.setVisibility(View.GONE);
         else
             filter_options.setVisibility(View.VISIBLE);
     }
-    private void confirmFill(@Nullable View view){
-        if(restThread != null) this.restThread.interrupt();
 
-        if(toggleFavorites.isChecked()) {
+    private void confirmFill(@Nullable View view) {
+
+        if (toggleFavorites.isChecked()) {
             adapter.change(favoriteDb.getPartiesWhen(max_price_selected));
             content.setAdapter(adapter);
             productMaxPriceFavorite = favoriteDb.getMaxPrice();
         } else {
-
-            restThread = new Thread(){
-                @Override
-                public void run() {
-                    adapter.clear();
-                    List<Party> newContent = rest.getItems(max_price_selected);
-
-                    requireActivity().runOnUiThread(() -> adapter.change(newContent));
-                }
-            };
-            restThread.start();
+            loadCircle.setVisibility(View.VISIBLE);
+            rest.getItems(max_price_selected, newContent -> {
+                adapter.change(newContent);
+                loadCircle.setVisibility(View.INVISIBLE);
+            });
         }
         filter_options.setVisibility(View.GONE);
     }
-    private void checkButtonListener(@Nullable View view){
+
+    private void checkButtonListener(@Nullable View view) {
 
         ConnectivityManager cm = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 

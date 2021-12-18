@@ -28,18 +28,12 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.ViewHolder> 
         this.container = container;
     }
 
-    public void clear(){
-        if (content != null) {
-            content.clear();
-            notifyItemRangeRemoved(0, content.size());
-        }
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     public void change(List<Party> content){
         this.content = content;
         notifyDataSetChanged();
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
